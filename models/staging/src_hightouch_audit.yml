@@ -1,0 +1,137 @@
+version: 2
+
+sources:
+  - name: hightouch_audit
+    schema: "{{ var('hightouch_audit_schema', 'hightouch_audit') }}"
+    database: "{{ var('hightouch_audit_database', target.database) }}"
+    loader: Hightouch
+    tables:
+      - name: sync_changelog
+        description: |
+          This table contains a row for every operation performed by Hightouch.
+          It includes the result of the operation, as well as any error messages from syncing.
+        columns:
+          - name: sync_id
+            description: The id of the sync
+          - name: sync_run_id
+            description: The id of the sync run
+          - name: row_id
+            description: The value of the row's primary key as defined from the model.
+          - name: op_type
+            description: |
+              Whether the row was added, changed, or removed relative to the last
+              run. This is computed by Hightouch when planning the sync run.
+              Note, that just because a row was removed from the previous run
+              does not mean the record was removed from a destination.
+          - name: status
+            description: |
+              Whether the row was successfully synced into destination. The value
+              may be succeeded (the row was successfully synced), failed
+              (Hightouch attempted to sync the row, but it failed to sync), and
+              aborted (Hightouch planned to sync the row, but did not attempt to
+              sync. This may happen if the sync may have been cancelled, or the
+              sync encountered a fatal error that terminated the run early).
+          - name: failure_reason
+            description: |
+              If the status is failed, this will contain a string describing why the row failed to sync.
+          - name: fields
+            description: |
+              A JSON object of the raw data from the model that is being synced
+              into destination. Note that this is the raw data from the
+              warehouse, not the payload that Hightouch sent to the destination.
+              This column is not supported on Redshift.
+
+      - name: sync_runs
+        description: |
+          This table contains a log of all the sync runs. The changelog and
+          snapshot tables can be JOINed to this table for more information on
+          when the sync occurred, and how it was configured.
+        columns:
+          - name: sync_id
+            description: The id of the sync
+          - name: sync_run_id
+            description: The id of the sync run
+          - name: primary_key
+            description: |
+              The name of primary key column of your sync (as defined on the model attached to the sync)
+          - name: destination
+            description: The destination type (e.g. salesforce, or braze)
+          - name: model_name
+            description: The name of the model attached to the sync
+          - name: error
+            description: The sync-level error if the sync terminated early
+          - name: status
+            description:
+              The status of the sync run. The will be either succeeded
+              or failed. In general, the per-row results of the sync are a better
+              indication of status.
+          - name: started_at
+            description: When the sync run started
+          - name: finished_at
+            description: When the sync run finished
+
+          - name: num_planned_add
+            description: The number of net new rows planned to sync
+          - name: num_planned_change
+            description: The number of changes to existing rows planned to sync
+          - name: num_planned_remove
+            description: |
+              The number of rows removed from the previous run. These will
+              only remove from the destination if a sync is configured to remove rows.
+
+          - name: num_attempted_add
+            description: Number of planned adds that were attempted
+          - name: num_attempted_change
+            description: Number of planned changes that were attempted
+          - name: num_attempted_remove
+            description: Number of planned removes that were attempted
+
+          - name: num_succeeded_add
+            description: Number of planned adds that were succeeded
+          - name: num_succeeded_change
+            description: Number of planned changes that were succeeded
+          - name: num_succeeded_remove
+            description: Number of planned removes that were succeeded
+
+          - name: num_failed_add
+            description: Number of planned adds that were attempted but failed
+          - name: num_failed_change
+            description: Number of planned changes that were attempted but failed
+          - name: num_failed_remove
+            description: Number of planned removes that were attempted but failed
+
+      - name: sync_snapshot
+        description: |
+          This table contains the latest status of each row in your model. The
+          information is very similar to the sync_changelog table, but is easier
+          to query for some use cases.
+        columns:
+          - name: sync_id
+            description: The id of the sync
+          - name: sync_run_id
+            description: The id of the sync run
+          - name: row_id
+            description: The value of the row's primary key as defined from the model.
+          - name: op_type
+            description: |
+              Whether the row was added, changed, or removed relative to the last
+              run. This is computed by Hightouch when planning the sync run.
+              Note, that just because a row was removed from the previous run
+              does not mean the record was removed from a destination.
+          - name: status
+            description: |
+              Whether the row was successfully synced into destination. The value
+              may be succeeded (the row was successfully synced), failed
+              (Hightouch attempted to sync the row, but it failed to sync), and
+              aborted (Hightouch planned to sync the row, but did not attempt to
+              sync. This may happen if the sync may have been cancelled, or the
+              sync encountered a fatal error that terminated the run early).
+          - name: failure_reason
+            description: |
+              If the status is failed, this will contain a string describing why the row failed to sync.
+          - name: fields
+            description: |
+              A JSON object of the raw data from the model that is being synced
+              into destination. Note that this is the raw data from the
+              warehouse, not the payload that Hightouch sent to the destination.
+              This column is not supported on Redshift.
