@@ -51,7 +51,8 @@ Include in your `packages.yml`
 
 ```yml
 packages:
-  - git: https://github.com/hightouchio/dbt-hightouch.git
+  - package: hightouchio/dbt-hightouch
+    version: 0.1.0
 ```
 
 (Once this package is on dbt Hub, we will add the dbt Hub link above)
