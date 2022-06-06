@@ -1,6 +1,46 @@
-# Hightouch Audit Models
+# dbt Hightouch In-Warehouse Audit Logs Package
 
-TODO: ADD README
+The [Hightouch dbt Package](https://github.com/hightouchio/dbt-hightouch) is a package that enhances the tables created when enabling the [Warehouse Sync History](https://hightouch.io/docs/syncs/warehouse-sync-history/) feature in Hightouch.
+
+When the feature is enabled, the following tables are created:
+
+* **sync_changelog**: This table contains a row for every operation performed by Hightouch. It includes the result of the operation, as well as any error messages from syncing.
+* **sync_snapshot**: This table contains the latest status of each row in your model. The information is very similar to the sync_changelog table, but is easier to query for some use cases.
+* **sync_runs**: This table contains a log of all the sync runs. The changelog and snapshot tables can be joined to this table for more information on when the sync occurred, and how it was configured.
+
+Once enabled, install this package and run it with:
+
+```
+dbt deps
+dbt run -m hightouch_audit
+```
+
+You can then query the new models in your warehouse.
+
+
+```
+stg_hightouch_audit__sync_changelog
+stg_hightouch_audit__sync_runs
+stg_hightouch_audit__sync_snapshot
+
+hightouch_audit__add_by_pk
+hightouch_audit__errors_by_sync
+hightouch_audit__ops_by_pk
+hightouch_audit__row_change_by_pk
+hightouch_audit__sync_stats
+```
+
+## Examples
+
+You can find example use-cases in our [public Hex Notebook](https://app.hex.tech/hightouch/app/2738b05e-131e-4f70-b0ea-ae5a8e8bd234/latest):
+
+Some common use cases are: 
+
+* Finding the first time a primary key was inserted for a sync
+* Understanding common errors by sync and across syncs
+* Understanding which primary keys have the most errors and operations
+* Finding changes between successive runs for a given primary key
+* Getting sync-level stats
 
 
 ## Installation Instructions
@@ -11,11 +51,29 @@ Include in your `packages.yml`
 
 ```yml
 packages:
-  - package: hightouch/hightouch_audit TODO: UPDATE THIS
+  - git: https://github.com/hightouchio/dbt-hightouch.git
 ```
+
+(Once this package is on dbt Hub, we will add the dbt Hub link above)
 
 ## Configuration
 
+The package will create models in the hightouch_audit schema by default. All models are 
+materialized as views. 
+
+Change this by updating your `dbt_project.yml` file, for example:
+
+```yml
+models:
+  dbt_hightouch:
+    +schema: hightouch_audit_models
+    +materialized: table
+    intermediate:
+      +materialized: ephemeral
+    staging:
+      +schema: staging
+      +materialized: view
+```
 ### Non-Snowflake-compatible models
 
 By default, this package builds all models, including those that are only compatible
@@ -28,12 +86,6 @@ vars:
   hightouch_snowflake_models_disabled: True
 
 ```
-
-### In-warehouse logs
-
-This package requires that you have in-warehouse diffing enabled for at least
-one of your syncs.
-
 
 ### Source Data Location
 
@@ -55,10 +107,11 @@ vars:
 
 ## Database Support
 
-This package has been tested on Snowflake.
+This package has been tested on Snowflake. All models except
+`hightouch_audit__row_change_by_pk` should work in most common data warehouses. The
+`hightouch_audit__row_change_by_pk` relies on the Snowflake-specific `FLATTEN` function
+although equivalents may be found in other warehouses.
 
 ## Contributions
 
 Additional contributions to this package are very welcome! Please create issues or open PRs against `main`. Check out [this post](https://discourse.getdbt.com/t/contributing-to-a-dbt-package/657) on the best workflow for contributing to a package.
-
-## Resources:
