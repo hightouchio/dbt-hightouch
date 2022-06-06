@@ -1,5 +1,5 @@
 with latest_sync_run as (
-    select * from {{ref('int_hightouch_latest_sync_run')}}
+    select * from {{ ref('int_hightouch_latest_sync_run') }}
 ),
 
 changelog as (

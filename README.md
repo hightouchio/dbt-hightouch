@@ -9,12 +9,25 @@ Check [dbt Hub](https://hub.getdbt.com/) for the latest installation instruction
 
 Include in your `packages.yml`
 
-```yaml
+```yml
 packages:
   - package: hightouch/hightouch_audit TODO: UPDATE THIS
 ```
 
 ## Configuration
+
+### Non-Snowflake-compatible models
+
+By default, this package builds all models, including those that are only compatible
+with Snowflake. To change this, add the following variable to your `dbt_project.yml`
+
+
+```yml
+
+vars:
+  hightouch_snowflake_models_disabled: True
+
+```
 
 ### In-warehouse logs
 
