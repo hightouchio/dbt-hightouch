@@ -12,7 +12,7 @@ Once enabled, install this package and run it with:
 
 ```
 dbt deps
-dbt run -m hightouch_audit
+dbt run -m dbt_hightouch
 ```
 
 You can then query the new models in your warehouse.
