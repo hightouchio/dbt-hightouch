@@ -1,6 +1,6 @@
-# dbt Hightouch In-Warehouse Audit Logs Package
+# dbt Hightouch Sync Logs Package
 
-The [Hightouch dbt Package](https://github.com/hightouchio/dbt-hightouch) is a package that enhances the tables created when enabling the [Warehouse Sync History](https://hightouch.io/docs/syncs/warehouse-sync-history/) feature in Hightouch.
+The [Hightouch dbt Package](https://github.com/hightouchio/dbt-hightouch) is a package that enhances the tables created when enabling the [Sync Logs](https://hightouch.io/docs/syncs/warehouse-sync-history/) feature in Hightouch.
 
 When the feature is enabled, the following tables are created:
 
@@ -34,7 +34,7 @@ hightouch_audit__sync_stats
 
 You can find example use-cases in our [public Hex Notebook](https://app.hex.tech/hightouch/app/2738b05e-131e-4f70-b0ea-ae5a8e8bd234/latest):
 
-Some common use cases are: 
+Some common use cases are:
 
 * Finding the first time a primary key was inserted for a sync
 * Understanding common errors by sync and across syncs
@@ -59,8 +59,8 @@ packages:
 
 ## Configuration
 
-The package will create models in the hightouch_audit schema by default. All models are 
-materialized as views. 
+The package will create models in the hightouch_audit schema by default. All models are
+materialized as views.
 
 Change this by updating your `dbt_project.yml` file, for example:
 
@@ -103,7 +103,7 @@ config-version: 2
 
 vars:
     hightouch_audit_schema: your_schema_name
-    hightouch_audit_database: your_database_name 
+    hightouch_audit_database: your_database_name
 ```
 
 ## Database Support
