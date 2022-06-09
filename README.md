@@ -1,6 +1,9 @@
 # dbt Hightouch Sync Logs Package
 
-The [Hightouch dbt Package](https://github.com/hightouchio/dbt-hightouch) is a package that enhances the tables created when enabling the [Sync Logs](https://hightouch.io/docs/syncs/warehouse-sync-history/) feature in Hightouch.
+The [Hightouch dbt Package](https://github.com/hightouchio/dbt-hightouch) is a
+package that enhances the tables created when enabling the
+[Sync Logs](https://hightouch.io/docs/syncs/warehouse-sync-logs/) feature in
+Hightouch.
 
 When the feature is enabled, the following tables are created:
 
@@ -12,7 +15,7 @@ Once enabled, install this package and run it with:
 
 ```
 dbt deps
-dbt run -m hightouch_audit
+dbt run -m dbt_hightouch
 ```
 
 You can then query the new models in your warehouse.
