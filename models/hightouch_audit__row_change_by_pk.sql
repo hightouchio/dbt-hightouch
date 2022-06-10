@@ -8,8 +8,12 @@ with changelog as (
     where row_status != 'failed'
 ),
 
+runs as (
+    select * from {{ ref('stg_hightouch_audit__sync_runs') }}
+),
+
 flatten_row_fields as (
-    select 
+    select
         sync_id,
         sync_run_id,
         primary_key,
@@ -17,11 +21,11 @@ flatten_row_fields as (
         f.value::string as field_value,
         lag(field_value) over(partition by sync_id, primary_key, field_name order by seq) as prev_field_value
 
-    from changelog, 
+    from changelog,
     lateral flatten(input => row_fields) f
 )
 
-select 
+select
 
     runs.sync_id,
     primary_key,
@@ -32,6 +36,6 @@ select
     sync_started_at
 
 from flatten_row_fields as flatten
-join dev.dbt_pedram.stg_hightouch_audit__sync_runs runs on flatten.sync_run_id = runs.sync_run_id
+join runs on flatten.sync_run_id = runs.sync_run_id
 where field_value != prev_field_value
 order by sync_id, primary_key, field_name, sync_run_id
