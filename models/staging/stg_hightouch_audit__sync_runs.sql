@@ -19,22 +19,22 @@ final as (
     num_planned_add as planned_add,
     num_planned_change as planned_change,
     num_planned_remove as planned_remove,
-    {{ dbt_utils.safe_add('num_planned_add', 'num_planned_change', 'num_planned_remove') }} as total_planned,
+    {{ dbt_utils.safe_add(['num_planned_add', 'num_planned_change', 'num_planned_remove']) }} as total_planned,
 
     num_attempted_add as attempted_add,
     num_attempted_change as attempted_change,
     num_attempted_remove as attempted_remove,
-    {{ dbt_utils.safe_add('num_attempted_add', 'num_attempted_change', 'num_attempted_remove') }} as total_attempted,
+    {{ dbt_utils.safe_add(['num_attempted_add', 'num_attempted_change', 'num_attempted_remove']) }} as total_attempted,
 
     num_succeeded_add as succeeded_add,
     num_succeeded_change as succeeded_change,
     num_succeeded_remove as succeeded_remove,
-    {{ dbt_utils.safe_add('num_succeeded_add', 'num_succeeded_change', 'num_succeeded_remove') }} as total_succeeded,
+    {{ dbt_utils.safe_add(['num_succeeded_add', 'num_succeeded_change', 'num_succeeded_remove']) }} as total_succeeded,
 
     num_failed_add as failed_add,
     num_failed_change as failed_change,
     num_failed_remove as failed_remove,
-    {{ dbt_utils.safe_add('num_failed_add', 'num_failed_change', 'num_failed_remove') }} as total_failed
+    {{ dbt_utils.safe_add(['num_failed_add', 'num_failed_change', 'num_failed_remove']) }} as total_failed
 
     from base
 
