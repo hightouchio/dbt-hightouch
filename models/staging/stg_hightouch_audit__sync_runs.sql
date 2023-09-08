@@ -14,7 +14,7 @@ final as (
     status as sync_status,
     started_at as sync_started_at,
     finished_at as sync_finished_at,
-    {{ dbt_utils.datediff('started_at', 'finished_at', 'second') }} as sync_elapsed_seconds,
+    {{ dbt.datediff('started_at', 'finished_at', 'second') }} as sync_elapsed_seconds,
 
     num_planned_add as planned_add,
     num_planned_change as planned_change,
